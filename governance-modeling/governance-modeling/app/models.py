@@ -3,6 +3,7 @@ Definition of models.
 """
 
 from django.db import models
+from enum import Enum
 
 class ProcessItem(models.Model):
     name = models.CharField(max_length = 255, unique =True)
@@ -32,23 +33,38 @@ class Process(models.Model):
                                 blank=True, 
                                 null=True, 
                                 related_name="processes")
-    condition_items = models.ManyToManyField(ProcessItem, related_name="condition_in_processes")
-    prevent_items = models.ManyToManyField(ProcessItem, related_name="prevent_in_processes")
-    result_items = models.ManyToManyField(ProcessItem, related_name="result_in_processes")
+    condition_items = models.ManyToManyField(ProcessItem, 
+                                                related_name="condition_in_processes",
+                                                blank=True,)
+    prevent_items = models.ManyToManyField(ProcessItem, 
+                                            related_name="prevent_in_processes",
+                                            blank=True,)
+    result_items = models.ManyToManyField(ProcessItem, 
+                                            related_name="result_in_processes",
+                                            blank=True,)
+
+    class Meta:
+        verbose_name_plural = "processes"
 
     def __str__(self):
         return self.name
 
-# The allowed types of a project parameter
-PARAMETER_TYPES = (('N', 'Number'),
-                    ('S', 'String'),
-                    ('B', 'Boolean'),
-                    ('E', 'Enum'))
+
 
 class ProjectParameter(models.Model):
+    NUMBER = 'N'
+    STRING = 'S'
+    BOOLEAN = 'B'
+    ENUM = 'E'
+    # The allowed types of a project parameter
+    PARAMETER_TYPE_CHOICES = ((NUMBER, 'Number'),
+                                (STRING, 'String'),
+                                (BOOLEAN, 'Boolean'),
+                                (ENUM, 'Enum'))
+
     name = models.CharField(max_length = 255, unique =True)
     description = models.TextField(max_length = 1000, blank=True, null=True,)   
-    type = models.CharField(max_length=1, choices = PARAMETER_TYPES)
+    type = models.CharField(max_length=1, choices = PARAMETER_TYPE_CHOICES)
     # values - from ParameterValue
 
     def __str__(self):
@@ -59,7 +75,8 @@ class ParameterValue(models.Model):
     description = models.TextField(max_length = 1000, blank=True, null=True,)    
     parameter = models.ForeignKey(ProjectParameter, 
                                     on_delete=models.CASCADE,
-                                    related_name="values")
+                                    related_name="values",
+                                    limit_choices_to={'type': ProjectParameter.ENUM},)
 
     class Meta:
         # Parameters cannot have duplicated values
@@ -71,9 +88,15 @@ class ParameterValue(models.Model):
 class ProjectRequirement(models.Model):
     name = models.CharField(max_length = 255, unique =True)
     description = models.TextField(max_length = 1000, blank=True, null=True,)   
-    condition_items = models.ManyToManyField(ProcessItem, related_name="condition_in_requirements")
-    prevent_items = models.ManyToManyField(ProcessItem, related_name="prevent_in_requirements")
-    intoruced_items = models.ManyToManyField(ProcessItem, related_name="introduced_in_requirements")
+    condition_items = models.ManyToManyField(ProcessItem, 
+                                                related_name="condition_in_requirements",
+                                                blank=True,)
+    prevent_items = models.ManyToManyField(ProcessItem, 
+                                            related_name="prevent_in_requirements",
+                                            blank=True,)
+    intoruced_items = models.ManyToManyField(ProcessItem, 
+                                                related_name="introduced_in_requirements",
+                                                blank=True,)
     # conditions - from ProjectRequirementCondition
 
     def __str__(self):

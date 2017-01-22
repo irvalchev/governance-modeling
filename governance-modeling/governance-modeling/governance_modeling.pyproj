@@ -55,9 +55,9 @@
     <Folder Include="governance_modeling\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="db.sqlite3" />
     <Content Include="readme.txt" />
     <Content Include="requirements.txt" />
-    <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\site.css" />
     <Content Include="app\static\app\scripts\modernizr-2.6.2.js" />
     <Content Include="app\static\app\scripts\_references.js" />
