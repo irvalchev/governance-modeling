@@ -55,13 +55,13 @@
     <Folder Include="governance_modeling\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\templates\app\execute.html" />
     <Content Include="db.sqlite3" />
     <Content Include="readme.txt" />
     <Content Include="requirements.txt" />
     <Content Include="app\static\app\content\site.css" />
     <Content Include="app\static\app\scripts\modernizr-2.6.2.js" />
     <Content Include="app\static\app\scripts\_references.js" />
-    <Content Include="app\templates\app\test.html" />
     <Content Include="app\templates\app\index.html" />
     <Content Include="app\templates\app\layout.html" />
     <Content Include="app\templates\app\login.html" />
