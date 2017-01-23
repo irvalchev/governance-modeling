@@ -94,7 +94,7 @@ class ProjectRequirement(models.Model):
     prevent_items = models.ManyToManyField(ProcessItem, 
                                             related_name="prevent_in_requirements",
                                             blank=True,)
-    intoruced_items = models.ManyToManyField(ProcessItem, 
+    introduced_items = models.ManyToManyField(ProcessItem, 
                                                 related_name="introduced_in_requirements",
                                                 blank=True,)
     # conditions - from ProjectRequirementCondition
@@ -108,10 +108,8 @@ class ProjectRequirementCondition(models.Model):
                                     on_delete=models.CASCADE, 
                                     related_name="conditions")
     condition_parameter = models.ForeignKey(ProjectParameter, on_delete=models.PROTECT)
-    parameter_value = models.ForeignKey(ParameterValue, 
-                                        on_delete=models.PROTECT, 
-                                        blank=True, 
-                                        null=True,)
+    allowed_values = models.ManyToManyField(ParameterValue, 
+                                            blank=True)
     custom_value = models.CharField(max_length = 100, blank=True, null=True,)
 
     class Meta:

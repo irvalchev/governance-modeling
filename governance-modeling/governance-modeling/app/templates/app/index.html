@@ -2,17 +2,21 @@
 
 {% block content %}
 
+{% load custom_filters %}
+
 <div class="row">
-    <div class="col-md-8">
-        <h2>Getting started</h2>
+    <div class="col-md-12">
         {% if param_values%}
         {{param_values}}
+        <br/>
+        {{active_requirements}}
+        <br/>
+        {{req_items}}
         {% else %}
             <form method="POST" action="." class="form-horizontal">
                  {% csrf_token %}
-                <h4>Enter project parameters.</h4>
-                <hr />
                 <fieldset>
+                    <legend>Enter project parameters</legend>
                     {% for field in execute_form %}
                     {% if field.errors %}
                     <div class="form-group error">
@@ -27,12 +31,12 @@
                     {% else %}
                     <div class="form-group">
                         <label class="col-md-2 control-label">{{ field.label }}</label>
-                        <div class="controls col-md-10">
+                        <div class="controls col-md-10">                            
                             {{ field }}
                             {% if field.help_text %}
                             <p class="help-inline"><small>{{ field.help_text }}</small></p>
                             {% endif %}
-                        </div>
+                        </div>                       
                     </div>
                     {% endif %}
                     {% endfor %}

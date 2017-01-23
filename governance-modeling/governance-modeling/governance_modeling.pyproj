@@ -28,10 +28,23 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="app\dss\governance_tree_builder.py" />
+    <Compile Include="app\dss\retrieve_governance_processes.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\dss\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="app\forms.py" />
     <Compile Include="app\migrations\0001_initial.py" />
+    <Compile Include="app\migrations\0002_auto_20170123_1418.py" />
+    <Compile Include="app\migrations\0003_auto_20170123_1516.py" />
     <Compile Include="app\models.py" />
     <Compile Include="app\admin.py" />
+    <Compile Include="app\templatetags\custom_filters.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="app\templatetags\__init__.py" />
     <Compile Include="app\urls.py" />
     <Compile Include="app\tests.py" />
     <Compile Include="app\views.py" />
@@ -46,6 +59,8 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="app\migrations\" />
+    <Folder Include="app\dss\" />
+    <Folder Include="app\templatetags\" />
     <Folder Include="app\static\" />
     <Folder Include="app\static\app\" />
     <Folder Include="app\static\app\content\" />
@@ -55,7 +70,6 @@
     <Folder Include="governance_modeling\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\templates\app\execute.html" />
     <Content Include="db.sqlite3" />
     <Content Include="readme.txt" />
     <Content Include="requirements.txt" />

@@ -24,10 +24,10 @@ class ProjectRequirementConditionForm(forms.ModelForm):
         super(ProjectRequirementConditionForm, self).__init__(*args, **kwargs)
         try:
             condition_param = self.instance.condition_parameter
-            self.fields['parameter_value'].queryset = ParameterValue.objects \
+            self.fields['allowed_values'].queryset = ParameterValue.objects \
                 .filter(parameter=condition_param)
         except ObjectDoesNotExist:
-             self.fields['parameter_value'].queryset = \
+             self.fields['allowed_values'].queryset = \
                 ParameterValue.objects.filter(parameter=None)
 
 class ExecuteForm(forms.Form):
@@ -54,13 +54,19 @@ class ExecuteForm(forms.Form):
                 self.fields[field_name] = \
                     forms.ChoiceField(label=param.name, 
                         required=False,
-                        choices=[(v.id, v.name) for v in param.values.all()])
+                        choices=[(0,"")] + [(v.id, v.name) for v in param.values.all()])
             # setting the default bootstrap class for all fields
             self.fields[field_name].widget.attrs['class'] = 'form-control'
 
     def param_values(self):
+        """
+        Finds the selected parameter values in the form
+        Returns a dictionary with keys the id of the parameters
+        and value - the selected value
+        """
+        selected_values = {}
         for name, value in self.cleaned_data.items():
             if name.startswith('param_'):
                 param_id = int(name.replace("param_",""))
-                yield (param_id, value)
-        
+                selected_values[param_id] = value
+        return selected_values
