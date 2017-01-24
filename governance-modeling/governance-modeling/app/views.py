@@ -1,13 +1,12 @@
 """
 Definition of views.
 """
-
 from django.shortcuts import render
 from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
 from app.forms import ExecuteForm
-from app.dss.retrieve_governance_processes import *
+from app.dss import retrieve_governance_processes, governance_tree_builder
 
 def home(request):
     """Renders the home page."""
@@ -16,16 +15,17 @@ def home(request):
         form = ExecuteForm(request.POST)
         if form.is_valid():
             param_values = form.param_values()
-            active_requirements = get_active_requirements(param_values)
-            req_items = get_requirement_items(active_requirements)
+            active_requirements = retrieve_governance_processes.get_active_requirements(param_values)
+            req_items = retrieve_governance_processes.get_requirement_items(active_requirements)
+            
+            tb = governance_tree_builder.GovernanceTreeBuilder()
+            tree_string = tb.pretty_print_items_support([i.id for i in req_items["condition_items"]])
             return render(
                 request,
                 'app/index.html',
                 {
                     'title':'Result',
-                    "param_values": param_values,
-                    "active_requirements": active_requirements,
-                    "req_items": req_items
+                    "tree_string": tree_string
                 }
             )
     else:

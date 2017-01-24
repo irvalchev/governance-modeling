@@ -26,7 +26,7 @@ SECRET_KEY = '525b4c5d-d30e-4968-b652-1b423e55a7d1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "mqm.in.tum.de"]
 
 
 # Application definition

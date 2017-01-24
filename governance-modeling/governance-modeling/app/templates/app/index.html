@@ -6,12 +6,11 @@
 
 <div class="row">
     <div class="col-md-12">
-        {% if param_values%}
-        {{param_values}}
-        <br/>
-        {{active_requirements}}
-        <br/>
-        {{req_items}}
+        {% if tree_string %}
+            <h4>
+                Governance Process AND/OR Tree
+            </h4>
+            <pre>{{tree_string|safe}}</pre>
         {% else %}
             <form method="POST" action="." class="form-horizontal">
                  {% csrf_token %}
