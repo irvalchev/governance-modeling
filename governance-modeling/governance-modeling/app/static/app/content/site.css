@@ -4,7 +4,7 @@
 }
 
 /* Set padding to keep content from hitting the edges */
-.body-content { 
+.body-content {
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 15px;
@@ -40,4 +40,33 @@ input[type="checkbox"].input-validation-error {
 
 .validation-summary-valid {
     display: none;
+}
+
+.required-items {
+    font-style: italic;
+    color: gray;
+    font-weight: normal;
+}
+
+.agent {
+    color: #af5123;
+    font-weight: bold;
+}
+
+.process {
+    color: #1499d3;
+    font-weight: bold;
+}
+
+.item {
+    color: #83aa30;
+    font-weight: bold;
+}
+
+/*.required-items .item{
+    font-weight: normal;
+}*/
+
+.condition {
+    font-weight: bold;
 }

@@ -239,11 +239,12 @@ class AndTree:
         self.expected_result_items = expected_result_items
 
     def __str__(self, **kwargs):
-        return "'{}': {{{}}}".format(self.get_label(), ' AND '.join(str(br) for key, br in self.branches.items()))
+        return "'{}': {{{}}}".format(self.get_label(), ' <span class="condition">AND</span> '.join(str(br) for key, br in self.branches.items()))
 
     def pretty_print(self, all_processes, all_items, level = 0):
-        return '\t' * level +("'{}': {{\n{}\n"+'\t' * level+"}}") \
-            .format(self.get_full_label(all_processes, all_items), ("\n"+'\t' * (level+1)+"AND\n") \
+        #required_items = "(i)Required Items = {}".format(" AND ".join(["Item: '{}'".format(all_items[x].name) for x in self.expected_result_items]))
+        return '\t' * level +("{} = {{\n{}\n"+'\t' * level+"}}") \
+            .format(self.get_full_label(all_processes, all_items), ("\n"+'\t' * (level+1)+"<span class='condition'>AND</span>\n") \
                     .join(br.pretty_print(all_processes, all_items,level+1) for key, br in self.branches.items()))
 
     def get_label(self):
@@ -267,12 +268,12 @@ class AndTree:
         ids = []
         for idx, val in enumerate(self.process_ids):
             if val is not None:
-                ids.append(get_process_name(val, all_processes))
+                ids.append("Step: <span class='process'>{}</span>, Agent: <span class='agent'>{}</span>".format(all_processes[val].name, all_processes[val].agent.name ))
             else:
                 # Expecting introduced item
-                ids.append("Introducible Item ({})".format(get_item_name(self.expected_result_items[idx], all_items)))
+                ids.append("Item: <span class='item'>{}</span>".format(all_items[self.expected_result_items[idx]].name))
 
-        return ', '.join(str(x) for x in ids)
+        return ' <span class="condition">AND</span> '.join(str(x) for x in ids)
 
 class OrTree:
         
@@ -297,22 +298,27 @@ class OrTree:
         elif self.no_support_needed:
             details_info = "No_Support_Needed"
         else:
-            details_info = "({})".format(' OR '.join(str(br) for key,br in self.branches.items()))
+            details_info = "({})".format(' <span class="condition">OR</span> '.join(str(br) for key,br in self.branches.items()))
 
         return "'{}': {}".format(self.get_label(),details_info)
 
     def pretty_print(self, all_processes, all_items, level = 0):
         details_info = ""
         if self.introduced_item_id is not None:
-            details_info = "**Expecting Introducible ({})".format( get_item_name(self.introduced_item_id, all_items))
+            details_info = "**Expecting Item <span class='item'>{}</span>**".format( all_items[self.introduced_item_id].name )
         elif self.no_support_needed:
             details_info = "**No Prerequisites**"
         else:
-            details_info = ("{{\n{}\n"+'\t' * level+"}}") \
-                .format(("\n"+'\t' * (level+1)+"OR\n") \
+            required_items = ""
+            if self.item_ids is None:
+                # Only get the required items for a process
+                required_items = "<span class='required-items'>Required Items = {}</span>" \
+                    .format(" <span class='condition'>AND</span> ".join(["Item: <span class='item'>{}</span>".format(all_items[x].name) for x in all_processes[self.process_id].condition_items_ids]))
+                required_items = "\n"+'\t' * level+ required_items;            
+            details_info = required_items + ("{{\n{}\n"+'\t' * level+"}}").format(("\n"+'\t' * (level+1)+"<span class='condition'>OR</span>\n") \
                         .join(br.pretty_print(all_processes, all_items,level+1) for key,br in self.branches.items()))
 
-        return '\t' * level+ "'{}': {}".format(self.get_full_label(all_processes, all_items),details_info)
+        return '\t' * level+ "{} = {}".format(self.get_full_label(all_processes, all_items),details_info)
         
     def get_label(self):
         """ 
@@ -321,20 +327,14 @@ class OrTree:
         if self.process_id is not None:
             return str(self.process_id)
         if self.item_ids is not None:
-            return "Items_"+",".join([str(x) for x in self.item_ids])
+            return "Items_"+", ".join([str(x) for x in self.item_ids])
         else:
             return "Intr_" + str(self.introduced_item_id)
 
     def get_full_label(self, all_processes, all_items):
         if self.process_id is not None:
-            return get_process_name(self.process_id, all_processes)
+            return "Step: <span class='process'>{}</span>, Agent: <span class='agent'>{}</span>".format(all_processes[self.process_id].name, all_processes[self.process_id].agent.name)
         if self.item_ids is not None:
-            return "**Items ({})".format(",".join([get_item_name(x, all_items) for x in self.item_ids]))
+            return " <span class='condition'>OR</span> ".join(["Item: <span class='item'>{}</span>".format(all_items[x].name) for x in self.item_ids])
         else:
-            return "**Introducible Item ({})".format(get_item_name(self.introduced_item_id, all_items)) 
-
-def get_process_name(proc_id, all_processes):
-    return all_processes[proc_id].name
-
-def get_item_name(item_id, all_items):
-    return all_items[item_id].name;
+            return "Item: <span class='item'>{}</span>".format(all_items[self.introduced_item_id].name) 
